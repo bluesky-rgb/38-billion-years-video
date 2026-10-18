@@ -6,3 +6,4 @@
 vo_cache/
 dl/
 __pycache__/
+!site/videos/*.mp4
