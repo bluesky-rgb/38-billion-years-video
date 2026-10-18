@@ -1,0 +1,164 @@
+
+
+<div class="wrap">
+  {{NAV}}
+  <header class="top">
+    <p class="kicker">竖屏科普短剧 · 项目总览</p>
+    <h1>38 亿年<em>家谱</em></h1>
+    <p class="lede">按时间顺序讲清"你从哪里来"：从星云收缩成太阳，到第一个细胞，到长出脊梁的鱼，最后讲到人。每集 1–3 分钟，讲清一次跃迁的来龙去脉，集集相连。</p>
+    <div class="facts">
+      <span><b>{{N_DONE}}</b>集已完成</span>
+      <span><b>24</b>集规划</span>
+      <span><b>{{TOTAL}}</b>分钟成片</span>
+      <span><b>{{NCARDS}}</b>张概念卡</span>
+    </div>
+  </header>
+
+  <p class="col cap" style="margin-bottom:8px">点任意一集的画面即可播放（720p 预览版，临时配音）。</p>
+  <div class="timeline">{{TIMELINE}}</div>
+  <p class="cap">已完成的 {{N_DONE}} 集在 46 亿年时间轴上的位置。越往后，一集覆盖的时间越短。</p>
+
+  {{SEASONS}}
+
+  <section class="block" id="understanding">
+    <h2>我们的理解</h2>
+    <p class="col">制作中每一个"没看懂"都会变成一条理解笔记，再补进片子里。这里是最近的几条，全部见<a href="notes.html">理解笔记</a>。</p>
+    <div class="notes">{{NOTES_PREVIEW}}</div>
+  </section>
+
+  <section class="block" id="review">
+    <h2>待审核稿件</h2>
+    {{REVIEW_PREVIEW}}
+  </section>
+
+  <section class="block" id="decisions">
+    <h2>已做的决策</h2>
+    <div class="tbl"><table><thead><tr><th>事项</th><th>决定</th></tr></thead><tbody>{{DECISIONS}}</tbody></table></div>
+  </section>
+
+  <section class="block" id="latest">
+    <h2>最新进展</h2>
+    <ol class="log">{{LOG_LATEST}}</ol>
+    <p><a class="more" href="log.html">完整制作日志 →</a></p>
+  </section>
+
+  <section class="block" id="method">
+    <h2>正向流程</h2>
+    <p class="col">每一集、每一个新出现的事物，都按这六步讲完。这是在修订中总结出来的：观众看不懂的地方，几乎都是跳过了其中一步。</p>
+    <ol class="steps">
+      <li><b>1</b><strong>前提</strong><span>当时的世界是什么样，已经有什么</span></li>
+      <li><b>2</b><strong>形成</strong><span>新东西从哪来，一步步怎么形成</span></li>
+      <li><b>3</b><strong>变化</strong><span>为什么会变，原因到结果，让变化看得见</span></li>
+      <li><b>4</b><strong>概念</strong><span>新词第一次出现，用一句大白话解释</span></li>
+      <li><b>5</b><strong>影响</strong><span>它改变了什么，和你有什么关系</span></li>
+      <li><b>6</b><strong>引出</strong><span>这个变化成为下一集的前提</span></li>
+    </ol>
+    <div class="tbl"><table>
+      <thead><tr><th>引导装置</th><th>作用</th><th>片中的例子</th></tr></thead>
+      <tbody>
+        <tr><td class="k">概念卡</td><td>新词第一次出现时弹出</td><td>板块：地壳碎成的大块，漂在炽热的地幔上</td></tr>
+        <tr><td class="k">尺度提示</td><td>镜头进入微观或示意画面时提醒</td><td>显微镜下 · 分子视角（极度放大）· 示意图 · 已放大</td></tr>
+        <tr><td class="k">指示条</td><td>讲连锁变化时让因果看得见</td><td>《雪球地球》里随剧情升降的二氧化碳与温度</td></tr>
+        <tr><td class="k">上集回顾</td><td>用上一集结尾的画面开场</td><td>上一集，地球冻成了雪球</td></tr>
+        <tr><td class="k">顶部时间轴</td><td>本季 6 个节点，当前集点亮</td><td>发电厂 → 雪球地球 → 分工 → 头和尾 → 脊梁 → 下巴</td></tr>
+        <tr><td class="k">和你有什么关系</td><td>每集最后一句，落到观众身上</td><td>你椎间盘里的髓核，是当年脊索留下的痕迹</td></tr>
+      </tbody>
+    </table></div>
+    <div class="card-demo" aria-label="概念卡样式"><b>温室气体</b><span>像棉被一样，替地球留住热量的气体</span></div>
+  </section>
+
+  <section class="block" id="changes">
+    <h2>已做的优化</h2>
+    <p class="col">每一轮修订都来自审片时的一个"没看懂"，再把同类问题在全系列排查一遍。</p>
+    <div class="tbl"><table>
+      <thead><tr><th>审片时的问题</th><th>改了什么</th><th>范围</th></tr></thead>
+      <tbody>
+        <tr><td>样片没有声音</td><td>换掉手机听不清的低频音轨，加入旁白、背景音乐和音效</td><td>全系列</td></tr>
+        <tr><td>各集之间缺少关联</td><td>上集回顾、顶部时间轴、"和你有什么关系"、结尾画面接下一集</td><td>全系列</td></tr>
+        <tr><td>地球为什么会冷却</td><td>补上热量散向太空、撞击变少、岩浆结皮、火山喷出水汽</td><td>第 0 季第 2 集</td></tr>
+        <tr><td>从细胞到细菌有断层</td><td>补上原始细胞分裂、变异，变成各色细菌铺满海洋</td><td>第 0 季第 6 集</td></tr>
+        <tr><td>超级大陆为什么会裂开、为什么会变冷</td><td>按板块、拼合、顶裂、风化吸碳、温室棉被、冰的反射重写</td><td>第 1 季第 2 集</td></tr>
+        <tr><td>概念不清、尺度跳跃</td><td>加入 {{NCARDS}} 张概念卡和尺度提示</td><td>全系列</td></tr>
+        <tr><td>大陆是怎么来的</td><td>补上俯冲、海水让岩石熔化、轻岩浆上冒成火山岛、拼合成大陆</td><td>第 1 季第 2 集</td></tr>
+        <tr><td>举一反三排查"凭空出现"</td><td>补上太阳的形成、脂类的来源、变异带来新本领、宿主细胞</td><td>第 0 季第 1、5、6 集，第 1 季第 1 集</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section class="block" id="next">
+    <h2>下一步</h2>
+    <div class="three">
+      <div><h3>内容</h3><ol>
+        <li>第 2 季登陆篇第 1 集《爬上岸的鱼》稿件审核中</li>
+        <li>第 2 季登陆篇逐集写稿、审核、制作</li>
+        <li>第 3 季人类篇，衔接"社会的本质"</li>
+      </ol></div>
+      <div><h3>质感升级</h3><ol>
+        <li>旁白统一换成 MiniMax 语音</li>
+        <li>每集前 3 秒加钩子，回顾压到 3 秒</li>
+        <li>字幕上移，避开平台按钮</li>
+        <li>镜头推拉、交叉溶解转场</li>
+        <li>正版配乐；贯穿全系列的"生命之线"</li>
+      </ol></div>
+      <div><h3>发布</h3><ol>
+        <li>第 0 季升级后在抖音、视频号、B 站首发，每周 2–3 集</li>
+        <li>看 3 秒留存、完播率、追更率和评论里的"没看懂"</li>
+        <li>数据稳定后做英文版，发 YouTube Shorts 与 TikTok</li>
+      </ol></div>
+    </div>
+    <h3 style="font-size:19px">待决定</h3>
+    <ul class="todo">
+      <li>MiniMax 旁白声音与 API Key</li>
+      <li>每集开头的钩子文案</li>
+      <li>是否加入"生命之线"贯穿记号</li>
+      <li>配乐库与授权方式</li>
+      <li>首发平台与更新频率</li>
+      <li>英文系列名</li>
+    </ul>
+  </section>
+
+  <section class="block" id="repo">
+    <h2>项目怎么驱动</h2>
+    <p class="col">所有文字内容集中在一张剧集表里，画面、配音、混音都由代码生成。改一句旁白、换一个声音、做英文版，都是改一处再统一重新渲染。</p>
+    <pre>38-billion-years/
+├─ docs/      方法论 · 规划 · 修订记录与下一步
+├─ scripts/   episodes.json：每集旁白、字幕、概念卡、年代
+├─ src/       series.py 系列框架 · ep1–ep11 画面 · 音效
+└─ site/      本页面与海报图</pre>
+    <div class="tbl"><table>
+      <thead><tr><th>步骤</th><th>谁来做</th><th>在哪里</th></tr></thead>
+      <tbody>
+        <tr><td>写稿（按正向流程）</td><td>Claude</td><td>对话里出稿，定稿写入剧集表</td></tr>
+        <tr><td>因果审核</td><td>制片人</td><td>每集一个 Issue，标出"没理解""跳步"</td></tr>
+        <tr><td>画面与关键帧确认</td><td>Claude，制片人确认</td><td>src/ 与 Issue</td></tr>
+        <tr><td>配音、混音、渲染</td><td>Claude</td><td>src/</td></tr>
+        <tr><td>成片发布</td><td>Claude 上传，制片人发平台</td><td>GitHub Releases</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <dialog class="player" id="player" aria-label="播放器">
+    <video id="pv" controls playsinline preload="metadata"></video>
+    <div class="pbar"><p><span id="pt"></span><small id="py"></small></p><button class="close" type="button" id="pc">关闭</button></div>
+  </dialog>
+  <p class="foot">内容采用 CC BY-NC 4.0，代码采用 MIT。最后更新：2026 年 10 月 18 日。</p>
+</div>
+
+<script>
+(function () {
+  var d = document.getElementById('player'), v = document.getElementById('pv');
+  function close() { v.pause(); v.removeAttribute('src'); v.load(); if (d.open) d.close(); }
+  document.querySelectorAll('.play').forEach(function (b) {
+    b.addEventListener('click', function () {
+      document.getElementById('pt').textContent = b.dataset.title;
+      document.getElementById('py').textContent = '和你的关系：' + b.dataset.you;
+      v.src = b.dataset.src;
+      if (d.showModal) d.showModal(); else d.setAttribute('open', '');
+      var p = v.play(); if (p && p.catch) p.catch(function () {});
+    });
+  });
+  document.getElementById('pc').addEventListener('click', close);
+  d.addEventListener('close', function () { v.pause(); });
+  d.addEventListener('click', function (e) { if (e.target === d) close(); });
+})();
+</script>

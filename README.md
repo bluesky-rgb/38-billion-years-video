@@ -6,7 +6,17 @@
 - 语言：中文（英文版规划中）
 - 进度：已完成 12 集（第 0 季、第 1 季全部），共规划 24 集
 - 在线观看：`site/videos/` 中有每集 720p 预览版，也可在项目网页中直接播放
-- 项目总览网页：`site/index.html`（可开启 GitHub Pages 访问）
+- 项目网页：`site/`（总览、每集详情、理解笔记、待审核稿件、制作日志），开启 GitHub Pages 后可在线访问
+
+## 工作方式
+
+每一步都提交到这个仓库，网页随之更新：
+
+1. 讨论中的每个问题和答案写进 `knowledge/notes.json`
+2. 下一集的稿子写进 `knowledge/drafts.json`，在网页"待审核"页审阅
+3. 定稿后写入 `src/series.py` 的剧集表，因果链写进 `knowledge/flow.json`
+4. 渲染成片，预览版放进 `site/videos/`
+5. 每一步记进 `knowledge/log.json`，运行 `python3 site/build.py` 重新生成网页
 
 ## 核心方法：正向流程
 
@@ -45,6 +55,7 @@
 
 ```
 docs/       方法论、规划、修订记录、下一步
+knowledge/  我们的理解：每集因果链、理解笔记、决策、制作日志、待审核稿件
 scripts/    每集稿件数据（episodes.json）
 src/        渲染与混音代码
 site/       项目总览网页与海报图
