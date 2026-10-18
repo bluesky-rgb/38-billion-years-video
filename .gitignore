@@ -1,0 +1,8 @@
+*.mp4
+*.wav
+*.npy
+*.png
+!site/**/*.png
+vo_cache/
+dl/
+__pycache__/
