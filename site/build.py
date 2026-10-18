@@ -18,7 +18,7 @@ METHOD = J('knowledge', 'method.json')
 REV = J('knowledge', 'revisions.json')
 e_ = html.escape
 SEASON = {0: ('第 0 季', '地球与生命的诞生'), 1: ('第 1 季', '海洋篇'), 2: ('第 2 季', '登陆篇'), 3: ('第 3 季', '人类篇')}
-ERA = {1: '约 46–44 亿年前', 2: '约 45–44 亿年前', 3: '约 40 亿年前', 4: '约 40 亿年前', 5: '约 40–38 亿年前', 6: '约 38–20 亿年前',
+ERA = {13: '约 4.7–3.65 亿年前', 1: '约 46–44 亿年前', 2: '约 45–44 亿年前', 3: '约 40 亿年前', 4: '约 40 亿年前', 5: '约 40–38 亿年前', 6: '约 38–20 亿年前',
        7: '约 20 亿年前', 8: '约 10–6.4 亿年前', 9: '约 6.4–5.4 亿年前', 10: '约 5.6–5.4 亿年前', 11: '约 5.4–5.18 亿年前', 12: '约 4.4–4 亿年前'}
 PLANNED = [
  (2, 2, '带着海水的蛋', '约 3.2 亿年前', '羊膜卵让动物彻底离开水'), (2, 3, '大死亡', '约 2.52 亿年前', '二叠纪大灭绝'),
@@ -73,12 +73,13 @@ def seasons():
     for s in range(4):
         cards = [ep_card(e) for e in EPS if e['season'] == s]
         for d in DRAFTS:
-            if d['season'] == s: cards.append(planned_card(s, d['episode'], d['title'], d['era'], '植物先上岸造出土壤，肉鳍鱼长出肺和四肢', d['status'], 'review.html'))
-        cards += [planned_card(*p) for p in PLANNED if p[0] == s]
+            if d['season'] == s: cards.append(planned_card(s, d['episode'], d['title'], d['era'], d['impact'][0], d['status'], 'review.html'))
+        taken = {(e['season'], e['episode']) for e in EPS} | {(d['season'], d['episode']) for d in DRAFTS}
+        cards += [planned_card(*p) for p in PLANNED if p[0] == s and (p[0], p[1]) not in taken]
         done = sum(1 for e in EPS if e['season'] == s)
         out += f'<section class="season" id="s{s}"><header><h2>{SEASON[s][0]}<span>{SEASON[s][1]}</span></h2><p class="count">{done} / 6 完成</p></header><div class="grid">{"".join(cards)}</div></section>'
     return out
-AGES = [46, 44.5, 40, 40, 39, 30, 20, 7, 6, 5.6, 5.2, 4.4]
+AGES = [46, 44.5, 40, 40, 39, 30, 20, 7, 6, 5.6, 5.2, 4.4, 3.75]
 def timeline():
     X = lambda a: 40 + (46 - a) / 46 * 920
     s = ['<svg viewBox="0 0 1000 170" role="img" aria-label="已完成各集在 46 亿年时间轴上的位置">',
@@ -91,7 +92,7 @@ def timeline():
         x = X(a); lane = lane + 1 if x - last < 14 else 0; last = x
         y = 58 - (lane % 3) * 18
         s.append(f'<a href="ep{i + 1:02d}.html"><circle cx="{x:.1f}" cy="{y}" r="8" class="tl-done"/><text x="{x:.1f}" y="{y + 4}" text-anchor="middle" class="tl-num">{i + 1}</text></a>')
-    s.append(f'<text x="{X(4.4) - 6:.1f}" y="150" text-anchor="end" class="tl-note">第 2、3 季的 12 集，都在最后 4.4 亿年里</text>')
+    s.append(f'<text x="{X(4.4) - 6:.1f}" y="150" text-anchor="end" class="tl-note">最后 4.4 亿年，占了全系列一半的集数</text>')
     s.append(f'<path d="M{X(4.4) - 2:.1f} 146 L{X(4.4) + 8:.1f} 146 L{X(4.4) + 8:.1f} 100" class="tl-lead"/></svg>')
     return ''.join(s)
 def note_html(n, full_ep_link=True):
@@ -106,8 +107,8 @@ def review_block(d, full_page=False):
     if not full_page:
         return head + f'<p class="col">稿子按正向流程写好，确认因果通顺后开始制作。<a href="review.html">阅读完整稿件 →</a></p>'
     return head + f'''<ol class="flow">
-  <li><span class="lab">前提</span><h3>陆地先绿了</h3>{ul(d["premise"])}</li>
-  <li><span class="lab">形成</span><h3>鱼怎么爬上岸</h3>{ul(d["formation"])}</li>
+  <li><span class="lab">前提</span><h3>当时的世界</h3>{ul(d["premise"])}</li>
+  <li><span class="lab">形成</span><h3>一步步怎么来的</h3>{ul(d["formation"])}</li>
   <li><span class="lab">影响</span><h3>带来了什么</h3>{ul(d["impact"])}</li>
   <li><span class="lab">概念卡</span><h3>新词</h3><p>{"、".join(d["cards"])}</p></li>
   <li><span class="lab">尺度提示</span><p>{e_(d["scale"])}</p></li>
