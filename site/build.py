@@ -35,7 +35,9 @@ cards_html = {0: [], 1: [], 2: [], 3: []}
 for e in eps:
     era, what = meta[e['id']]
     cards_html[e['season']].append(f'''<article class="ep">
-  <img src="{poster(e['id'])}" alt="《{html.escape(e['title'])}》画面截图" width="360" height="640" loading="lazy">
+  <button class="play" type="button" data-src="videos/ep{e['id']:02d}.mp4" data-title="{SEASON[e['season']][0]} · 第 {e['episode']} 集《{html.escape(e['title'])}》" data-you="{html.escape(e['theme'])}" aria-label="播放《{html.escape(e['title'])}》">
+    <img src="{poster(e['id'])}" alt="" width="360" height="640" loading="lazy"><span class="tri" aria-hidden="true"></span>
+  </button>
   <div class="ep-body">
     <p class="ep-no">{SEASON[e['season']][0]} · 第 {e['episode']} 集 <span class="dur">{mmss(e['duration_s'])}</span></p>
     <h3>{html.escape(e['title'])}</h3>
