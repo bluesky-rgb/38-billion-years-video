@@ -1,12 +1,25 @@
 # 38 亿年家谱
 
+**项目网页：https://4jt8jty9sk-cpu.github.io/38-billion-years/**
+
+在网页上可以播放全部已完成的剧集，查看每集的因果链和旁白，以及项目思路、方法论、理解笔记、概念词典、待审核稿件和制作日志。
+
+| 页面 | 内容 |
+| --- | --- |
+| [总览](https://4jt8jty9sk-cpu.github.io/38-billion-years/site/) | 全部剧集、时间轴、最新进展 |
+| [项目思路](https://4jt8jty9sk-cpu.github.io/38-billion-years/site/about.html) | 两条主线、社会的本质、方案、产品矩阵、英文版、发布指标 |
+| [方法论](https://4jt8jty9sk-cpu.github.io/38-billion-years/site/method.html) | 正向流程六步、修订中学到的规则、引导装置、检查清单 |
+| [理解笔记](https://4jt8jty9sk-cpu.github.io/38-billion-years/site/notes.html) | 制作中提出的每个问题和答案 |
+| [概念词典](https://4jt8jty9sk-cpu.github.io/38-billion-years/site/glossary.html) | 片中全部概念卡 |
+| [待审核](https://4jt8jty9sk-cpu.github.io/38-billion-years/site/review.html) | 下一集的完整稿子 |
+| [制作日志](https://4jt8jty9sk-cpu.github.io/38-billion-years/site/log.html) | 从想法到现在的每一步 |
+
 一部按时间顺序讲清"你从哪里来"的竖屏科普短剧：从星云收缩成太阳、地球诞生、生命起源，一路讲到人类。每集 1–3 分钟，讲清一次跃迁的来龙去脉，集集相连。
 
 - 画幅：9:16 竖屏，1080×1920，30 帧
 - 语言：中文（英文版规划中）
 - 进度：已完成 12 集（第 0 季、第 1 季全部），共规划 24 集
 - 在线观看：`site/videos/` 中有每集 720p 预览版，也可在项目网页中直接播放
-- 项目网页：`site/`（总览、每集详情、理解笔记、待审核稿件、制作日志），开启 GitHub Pages 后可在线访问
 
 ## 工作方式
 

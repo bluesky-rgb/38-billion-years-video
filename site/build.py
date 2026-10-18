@@ -13,6 +13,9 @@ NOTES = J('knowledge', 'notes.json')
 LOG = J('knowledge', 'log.json')
 DEC = J('knowledge', 'decisions.json')
 DRAFTS = J('knowledge', 'drafts.json')
+VIS = J('knowledge', 'vision.json')
+METHOD = J('knowledge', 'method.json')
+REV = J('knowledge', 'revisions.json')
 e_ = html.escape
 SEASON = {0: ('第 0 季', '地球与生命的诞生'), 1: ('第 1 季', '海洋篇'), 2: ('第 2 季', '登陆篇'), 3: ('第 3 季', '人类篇')}
 ERA = {1: '约 46–44 亿年前', 2: '约 45–44 亿年前', 3: '约 40 亿年前', 4: '约 40 亿年前', 5: '约 40–38 亿年前', 6: '约 38–20 亿年前',
@@ -25,7 +28,7 @@ PLANNED = [
  (3, 4, '火', '约 100 万年前', '用火与更大的大脑'), (3, 5, '走出非洲', '约 30–6 万年前', '智人遍布全球'),
  (3, 6, '会讲故事的人', '约 7 万年前', '语言与认知革命')]
 FONTS = '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;900&family=Noto+Sans+SC:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">'
-NAV_ITEMS = [('index.html', '总览'), ('ep01.html', '剧集'), ('notes.html', '理解笔记'), ('review.html', '待审核'), ('log.html', '制作日志'),
+NAV_ITEMS = [('index.html', '总览'), ('ep01.html', '剧集'), ('about.html', '项目思路'), ('method.html', '方法论'), ('notes.html', '理解笔记'), ('glossary.html', '概念词典'), ('review.html', '待审核'), ('log.html', '制作日志'),
              ('https://github.com/4jt8jty9sk-cpu/38-billion-years', 'GitHub')]
 def nav(cur):
     a = ['<nav class="nav" aria-label="网站导航"><a class="brand" href="index.html">38 亿年家谱</a>']
@@ -116,7 +119,7 @@ PLAYER_JS = open(os.path.join(HERE, 'player.js'), encoding='utf-8').read()
 body = open(os.path.join(HERE, 'index_body.html'), encoding='utf-8').read()
 total = sum(e['duration_s'] for e in EPS); ncards = sum(len(e['concept_cards']) for e in EPS)
 body = (body.replace('{{SEASONS}}', seasons()).replace('{{N_DONE}}', str(len(EPS))).replace('{{TOTAL}}', f'{total / 60:.1f}')
-        .replace('{{NCARDS}}', str(ncards)).replace('{{TIMELINE}}', timeline())
+        .replace('{{NCARDS}}', str(ncards)).replace('{{N_NOTES}}', str(len(NOTES))).replace('{{N_LOG}}', str(len(LOG))).replace('{{TIMELINE}}', timeline())
         .replace('{{NOTES_PREVIEW}}', ''.join(note_html(n) for n in NOTES[-3:]))
         .replace('{{REVIEW_PREVIEW}}', ''.join(review_block(d) for d in DRAFTS) or '<p>暂无待审核稿件。</p>')
         .replace('{{DECISIONS}}', ''.join(f'<tr><td class="k">{e_(d["t"])}</td><td>{e_(d["d"])}</td></tr>' for d in DEC))
@@ -134,6 +137,8 @@ for k, e in enumerate(EPS):
     lines = [(0, x, 'r') for x in e['recap']] + [(round(x['start'] + 7.0, 1), x['text'], '') for x in e['narration']]
     script = ''.join(f'<div class="{c}"><time>{mmss(t) if c == "" else "回顾"}</time><span>{e_(x)}</span></div>' for t, x, c in lines)
     cards = ''.join(f'<span class="chip"><b>{e_(c["term"])}</b>{e_(c["definition"])}</span>' for c in e['concept_cards'])
+    rv = REV.get(str(n), [])
+    revs = ('<section class="block"><h2>修订记录</h2><p class="cap">审片时发现的问题和补上的内容。</p><ol class="log">' + ''.join(f'<li><time>第 {x[2]} 轮</time><span class="kind k-修正">修正</span><span>{e_(x[x.index("：") + 1:])}</span></li>' for x in rv) + '</ol></section>') if rv else ''
     related = [nn for nn in NOTES if nn.get('ep') == n]
     rel = ('<section class="block"><h2>相关理解笔记</h2><div class="notes">' + ''.join(note_html(x) for x in related) + '</div></section>') if related else ''
     b = f'''<div class="wrap">{nav(f"ep{n:02d}.html")}
@@ -151,7 +156,7 @@ for k, e in enumerate(EPS):
   </ol>
 </div>
 <section class="block"><h2>完整旁白</h2><p class="cap">时间为成片中的位置；"回顾"为开头 7 秒的上集回顾。</p><div class="script">{script}</div></section>
-{rel}
+{revs}{rel}
 <nav class="pager" aria-label="翻页">{prev}{nxt}</nav>
 </div>'''
     write(f'ep{n:02d}.html', full(f'{e["title"]} · 38 亿年家谱', b, f['premise']))
@@ -166,4 +171,50 @@ write('log.html', full('制作日志 · 38 亿年家谱', lb, '项目从想法�
 rb = f'''<div class="wrap">{nav("review.html")}<header class="page-head"><p class="kicker">待审核稿件</p><h1>下一集的稿子</h1>
 <p class="lede">按正向流程写好，确认因果通顺、没有跳步后才开始制作。</p></header>{"".join(f'<section class="block" style="border-top:0;margin-top:0;padding-top:16px"><h2>《{e_(d["title"])}》</h2>{review_block(d, True)}</section>' for d in DRAFTS) or '<p>暂无待审核稿件。</p>'}</div>'''
 write('review.html', full('待审核稿件 · 38 亿年家谱', rb, '下一集的稿子。'))
-print('built', 3 + len(EPS) + 1, 'pages')
+
+def sec(title, inner, lead=''):
+    return f'<section class="block"><h2>{title}</h2>{f"<p class=col>{lead}</p>" if lead else ""}{inner}</section>'
+def table(heads, rows):
+    return '<div class="tbl"><table><thead><tr>' + ''.join(f'<th>{h}</th>' for h in heads) + '</tr></thead><tbody>' + ''.join('<tr>' + ''.join(f'<td{" class=k" if i == 0 else ""}>{e_(c)}</td>' for i, c in enumerate(r)) + '</tr>' for r in rows) + '</tbody></table></div>'
+def ulist(xs, tag='ul'): return f'<{tag} class="plain">' + ''.join(f'<li>{e_(x)}</li>' for x in xs) + f'</{tag}>'
+V = VIS
+two = '<div class="tbl"><table class="lines"><thead><tr><th>时间</th><th>合作：谁和谁组成整体</th><th>信息：靠什么记住和传递</th><th>在哪一集</th></tr></thead><tbody>' + ''.join(
+    f'<tr{" class=gene" if i == 4 else ""}><td class="k">{e_(l["era"])}</td><td>{e_(l["coop"])}</td><td>{e_(l["info"])}</td><td class="muted">{e_(l["ep"])}</td></tr>' for i, l in enumerate(V['lines'])) + '</tbody></table></div><p class="cap">从 7 万年前那一行开始，变化从靠基因改为靠文化，速度从几亿年缩短到几百年。</p>'
+prod = '<div class="cards3">' + ''.join(f'<div><p class="ep-no">{e_(p["s"])}</p><h3>{e_(p["n"])}</h3><p>{e_(p["d"])}</p></div>' for p in V['products']) + '</div>'
+qual = '<div class="three">' + ''.join(f'<div><h3>{e_(q["n"])}</h3><p>{e_(q["d"])}</p></div>' for q in V['quality']) + '</div>'
+ab = f"""<div class="wrap">{nav("about.html")}<header class="page-head"><p class="kicker">项目思路</p><h1>为什么做，做成什么样</h1>
+<p class="lede">{e_(V['thesis'])}</p></header>
+{sec('两条主线', two, '每一次跃迁都同时发生两件事：原本独立的单位合作成更大的整体，信息有了新的存储和传递方式。')}
+{sec('终点：社会的本质', ulist(V['society']), '这个系列最初的问题是"人类群体是怎么演变来的"。往回追到生命起源，是为了让这个答案有根。')}
+{sec('系列方案', table(['事项', '方案'], [(p['n'], p['d']) for p in V['plan']]))}
+{sec('产品矩阵', prod, '一个核心叙事，用不同形态反复讲。先用短视频验证，再延伸。')}
+{sec('质感评估', qual)}
+{sec('声音方案', ulist(V['voice']))}
+{sec('英文版与海外', ulist(V['overseas']))}
+{sec('发布后看什么', table(['指标', '看什么', '偏低时怎么改'], [(m['n'], m['w'], m['f']) for m in V['metrics']]), '先用前两季在国内平台测试，每周 2–3 集，观察 2–3 周数据再调整。')}
+{sec('待决定', '<ul class="todo">' + ''.join(f'<li>{e_(x)}</li>' for x in V['pending']) + '</ul>')}
+</div>"""
+write('about.html', full('项目思路 · 38 亿年家谱', ab, V['thesis']))
+M = METHOD
+steps = '<ol class="steps">' + ''.join(f'<li><b>{i + 1}</b><strong>{a}</strong><span>{e_(b)}</span></li>' for i, (a, b) in enumerate(M['steps'])) + '</ol>'
+mb = f"""<div class="wrap">{nav("method.html")}<header class="page-head"><p class="kicker">方法论</p><h1>正向流程</h1>
+<p class="lede">每一集、每一个新出现的事物，都按这六步讲完，不允许凭空出现、不允许跳步。这套方法是在一次次"没看懂"里总结出来的。</p></header>
+{steps}
+{sec('从修订中学到的', table(['审片时的问题', '学到的规则'], M['lessons']))}
+{sec('写稿自查', ulist(M['selfcheck'], 'ol'))}
+{sec('引导装置', table(['装置', '作用', '片中的例子'], M['devices']))}
+{sec('制作流程', table(['步骤', '谁来做', '在哪里'], M['pipeline']), '每一步都提交到 GitHub 仓库，网页随之更新。')}
+{sec('成片检查清单', '<ul class="todo">' + ''.join(f'<li>{e_(x)}</li>' for x in M['checklist']) + '</ul>')}
+</div>"""
+write('method.html', full('方法论 · 38 亿年家谱', mb, '正向流程六步、引导装置、制作流程与检查清单。'))
+gl = ''
+nterms = 0
+for e in EPS:
+    if not e['concept_cards']: continue
+    nterms += len(e['concept_cards'])
+    gl += f'<section class="gloss"><h2><a href="ep{e["id"]:02d}.html">{ep_label(e)} · {e_(e["title"])}</a></h2><dl>' + ''.join(f'<div><dt>{e_(c["term"])}</dt><dd>{e_(c["definition"])}</dd></div>' for c in e['concept_cards']) + '</dl></section>'
+gb = f"""<div class="wrap">{nav("glossary.html")}<header class="page-head"><p class="kicker">概念词典 · {nterms} 个词</p><h1>每个新词，一句白话</h1>
+<p class="lede">片中每个新词第一次出现时都会弹出概念卡。这里按出现顺序全部收录，看完就是一份从星云到有颌鱼的词汇表。</p></header>{gl}</div>"""
+write('glossary.html', full('概念词典 · 38 亿年家谱', gb, '片中全部概念卡，按出现顺序。'))
+print('built', 6 + len(EPS) + 1, 'pages')
+
