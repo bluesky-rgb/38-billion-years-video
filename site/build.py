@@ -29,7 +29,7 @@ PLANNED = [
  (3, 6, '会讲故事的人', '约 7 万年前', '语言与认知革命')]
 FONTS = '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;900&family=Noto+Sans+SC:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">'
 NAV_ITEMS = [('index.html', '总览'), ('ep01.html', '剧集'), ('about.html', '项目思路'), ('method.html', '方法论'), ('notes.html', '理解笔记'), ('glossary.html', '概念词典'), ('review.html', '待审核'), ('log.html', '制作日志'), ('https://bluesky-rgb.github.io/38-billion-years-research/', '研究笔记'),
-             ('https://github.com/4jt8jty9sk-cpu/38-billion-years', 'GitHub')]
+             ('https://github.com/bluesky-rgb/38-billion-years', 'GitHub')]
 def nav(cur):
     a = ['<nav class="nav" aria-label="网站导航"><a class="brand" href="index.html">38 亿年家谱</a>']
     for href, lab in NAV_ITEMS:
