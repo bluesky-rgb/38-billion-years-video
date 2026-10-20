@@ -1,6 +1,6 @@
 # 38 亿年家谱
 
-**项目网页：https://bluesky-rgb.github.io/38-billion-years/**
+**项目网页：https://bluesky-rgb.github.io/38-billion-years-video/**
 
 **研究笔记：https://bluesky-rgb.github.io/38-billion-years-research/**（按主题整理的全部理解，[仓库](https://github.com/bluesky-rgb/38-billion-years-research)）
 
@@ -8,13 +8,13 @@
 
 | 页面 | 内容 |
 | --- | --- |
-| [总览](https://bluesky-rgb.github.io/38-billion-years/site/) | 全部剧集、时间轴、最新进展 |
-| [项目思路](https://bluesky-rgb.github.io/38-billion-years/site/about.html) | 两条主线、社会的本质、方案、产品矩阵、英文版、发布指标 |
-| [方法论](https://bluesky-rgb.github.io/38-billion-years/site/method.html) | 正向流程六步、修订中学到的规则、引导装置、检查清单 |
-| [理解笔记](https://bluesky-rgb.github.io/38-billion-years/site/notes.html) | 制作中提出的每个问题和答案 |
-| [概念词典](https://bluesky-rgb.github.io/38-billion-years/site/glossary.html) | 片中全部概念卡 |
-| [待审核](https://bluesky-rgb.github.io/38-billion-years/site/review.html) | 下一集的完整稿子 |
-| [制作日志](https://bluesky-rgb.github.io/38-billion-years/site/log.html) | 从想法到现在的每一步 |
+| [总览](https://bluesky-rgb.github.io/38-billion-years-video/site/) | 全部剧集、时间轴、最新进展 |
+| [项目思路](https://bluesky-rgb.github.io/38-billion-years-video/site/about.html) | 两条主线、社会的本质、方案、产品矩阵、英文版、发布指标 |
+| [方法论](https://bluesky-rgb.github.io/38-billion-years-video/site/method.html) | 正向流程六步、修订中学到的规则、引导装置、检查清单 |
+| [理解笔记](https://bluesky-rgb.github.io/38-billion-years-video/site/notes.html) | 制作中提出的每个问题和答案 |
+| [概念词典](https://bluesky-rgb.github.io/38-billion-years-video/site/glossary.html) | 片中全部概念卡 |
+| [待审核](https://bluesky-rgb.github.io/38-billion-years-video/site/review.html) | 下一集的完整稿子 |
+| [制作日志](https://bluesky-rgb.github.io/38-billion-years-video/site/log.html) | 从想法到现在的每一步 |
 
 一部按时间顺序讲清"你从哪里来"的竖屏科普短剧：从星云收缩成太阳、地球诞生、生命起源，一路讲到人类。每集 1–3 分钟，讲清一次跃迁的来龙去脉，集集相连。
 
