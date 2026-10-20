@@ -1,5 +1,5 @@
 import numpy as np
-SR, DUR = 44100, 115.0
+SR, DUR = 44100, 145.0
 t = np.arange(int(SR * DUR)) / SR
 r = np.random.default_rng(16)
 def ss(a, b, x):
