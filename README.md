@@ -2,6 +2,8 @@
 
 **项目网页：https://4jt8jty9sk-cpu.github.io/38-billion-years/**
 
+**研究笔记：https://bluesky-rgb.github.io/38-billion-years-research/**（按主题整理的全部理解，[仓库](https://github.com/bluesky-rgb/38-billion-years-research)）
+
 在网页上可以播放全部已完成的剧集，查看每集的因果链和旁白，以及项目思路、方法论、理解笔记、概念词典、待审核稿件和制作日志。
 
 | 页面 | 内容 |
