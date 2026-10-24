@@ -112,7 +112,7 @@ python3 series.py 9 video 第1季第3集.mp4    # 渲染整集
 
 ## 已知限制
 
-- 旁白目前使用离线合成（sherpa-onnx + MeloTTS），后期统一替换为 MiniMax 语音
+- 旁白目前使用离线合成（sherpa-onnx + MeloTTS）；MiniMax 配音已接入（音色 `Chinese (Mandarin)_Gentleman`），设置 `MINIMAX_API_KEY` 后运行 `python3 src/revoice.py` 即可替换全部 30 集的音轨
 - 第 1、2、6、8 集的音效轨在插入新段落时做过拼接，拼接步骤记录在 [src/README.md](src/README.md)
 
 ## 许可

@@ -663,8 +663,10 @@ class Ep:
         lines = list(s.c['recap_vo']) + [(R + 1.3, intro)]
         lines += [(a + R, x) for a, x in s.c['vo']]
         lines += [(R + s.M + 0.3, s.c['theme'][1]), (R + s.M + 4.8, s.c.get('next_vo', f'下一集，{s.c["next"]}。'))]
-        for t0, x in lines:
-            a = tts(x); i0 = int(t0 * SR); i1 = min(i0 + a.size, n); vo[i0:i1] += a[:i1 - i0]
+        lines.sort(key=lambda z: z[0])
+        for k, (t0, x) in enumerate(lines):
+            nx = lines[k + 1][0] if k + 1 < len(lines) else s.D
+            a = fit(tts(x), nx - t0 - 0.15); i0 = int(t0 * SR); i1 = min(i0 + a.size, n); vo[i0:i1] += a[:i1 - i0]
         venv = np.convolve(np.abs(vo), np.ones(int(0.25 * SR)) / int(0.25 * SR), 'same')
         duck = 1 - 0.5 * np.clip(venv / 0.05, 0, 1)
         mix = bed * duck + vo
@@ -676,8 +678,40 @@ class Ep:
 
 TB = glob.glob('dl/bin/*/bin')[0]; TLIB = glob.glob('dl/bin/*/lib')[0]
 TM = [d for d in glob.glob('dl/model/*') if os.path.isdir(d)]; TM = TM[0] if TM else 'dl/model'
+VOICE = os.environ.get('VOICE_ENGINE', 'minimax' if os.environ.get('MINIMAX_API_KEY') else 'sherpa')
+MM_VOICE = os.environ.get('MINIMAX_VOICE', 'Chinese (Mandarin)_Gentleman')
+MM_MODEL = os.environ.get('MINIMAX_MODEL', 'speech-2.6-hd')
+MM_URL = os.environ.get('MINIMAX_URL', 'https://api.minimaxi.com/v1/t2a_v2')
+MM_SPEED = float(os.environ.get('MINIMAX_SPEED', '1.0'))
+def _load_wav(q):
+    with wave.open(q) as w: a = np.frombuffer(w.readframes(w.getnframes()), np.int16).astype(np.float32) / 32768
+    return a / (np.abs(a).max() + 1e-6) * 0.9
+def _tts_minimax(text, h):
+    import json, urllib.request
+    body = {'model': MM_MODEL, 'text': text, 'stream': False, 'language_boost': 'Chinese', 'output_format': 'hex',
+            'voice_setting': {'voice_id': MM_VOICE, 'speed': MM_SPEED, 'vol': 1, 'pitch': 0},
+            'audio_setting': {'sample_rate': 44100, 'bitrate': 128000, 'format': 'mp3', 'channel': 1}}
+    req = urllib.request.Request(MM_URL, data=json.dumps(body).encode(), method='POST',
+                                 headers={'Authorization': 'Bearer ' + os.environ['MINIMAX_API_KEY'], 'Content-Type': 'application/json'})
+    for attempt in range(4):
+        try:
+            r = json.loads(urllib.request.urlopen(req, timeout=60).read())
+            if r.get('base_resp', {}).get('status_code') == 0 and r.get('data') and r['data'].get('audio'): break
+            raise RuntimeError(r.get('base_resp'))
+        except Exception as ex:
+            if attempt == 3: raise
+            import time; time.sleep(2 + 3 * attempt)
+    p = f'vo_cache/mm_{h}.mp3'; q = f'vo_cache/mm_{h}_44.wav'
+    open(p, 'wb').write(bytes.fromhex(r['data']['audio']))
+    subprocess.run(['ffmpeg', '-y', '-v', 'error', '-i', p, '-af', 'silenceremove=start_periods=1:start_threshold=-45dB,areverse,silenceremove=start_periods=1:start_threshold=-45dB,areverse',
+                    '-ar', str(SR), '-ac', '1', q], check=True)
+    return _load_wav(q)
 def tts(text):
     os.makedirs('vo_cache', exist_ok=True)
+    if VOICE == 'minimax':
+        h = hashlib.md5(f'{MM_MODEL}|{MM_VOICE}|{MM_SPEED}|{text}'.encode()).hexdigest()[:12]; npy = f'vo_cache/mm_{h}.npy'
+        if os.path.exists(npy): return np.load(npy)
+        a = _tts_minimax(text, h); np.save(npy, a); return a
     h = hashlib.md5(text.encode()).hexdigest()[:12]; npy = f'vo_cache/{h}.npy'
     if os.path.exists(npy): return np.load(npy)
     p = f'vo_cache/{h}.wav'; q = f'vo_cache/{h}_44.wav'
@@ -685,8 +719,17 @@ def tts(text):
                     f'--vits-tokens={TM}/tokens.txt', f'--vits-dict-dir={TM}/dict', '--sid=1', f'--output-filename={p}', text],
                    env=dict(os.environ, LD_LIBRARY_PATH=TLIB), check=True, capture_output=True)
     subprocess.run(['ffmpeg', '-y', '-v', 'error', '-i', p, '-ar', str(SR), '-ac', '1', q], check=True)
-    with wave.open(q) as w: a = np.frombuffer(w.readframes(w.getnframes()), np.int16).astype(np.float32) / 32768
-    a = a / (np.abs(a).max() + 1e-6) * 0.9; np.save(npy, a); return a
+    a = _load_wav(q); np.save(npy, a); return a
+def fit(a, slot):
+    """Speed a line up (max 1.3x) if it runs past its slot, so lines never overlap."""
+    d = a.size / SR
+    if d <= slot or slot <= 0.5: return a
+    r = min(1.3, d / slot)
+    src = 'vo_cache/_fit_in.wav'; dst = 'vo_cache/_fit_out.wav'
+    with wave.open(src, 'wb') as w:
+        w.setnchannels(1); w.setsampwidth(2); w.setframerate(SR); w.writeframes((np.clip(a, -1, 1) * 32767).astype(np.int16).tobytes())
+    subprocess.run(['ffmpeg', '-y', '-v', 'error', '-i', src, '-af', f'atempo={r:.4f}', dst], check=True)
+    return _load_wav(dst)
 
 if __name__ == '__main__':
     n = int(sys.argv[1]); e = Ep(n)

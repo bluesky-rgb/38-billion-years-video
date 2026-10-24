@@ -30,5 +30,9 @@
  {
   "t": "项目管理",
   "d": "GitHub 公开仓库为生产中枢，每一步都提交；网页展示全部理解、进度和下一步。"
+ },
+ {
+  "t": "配音音色",
+  "d": "MiniMax 中文系统音色 Chinese (Mandarin)_Gentleman（沉稳、温和的成年男声，适合科普旁白），模型 speech-2.6-hd；备选 Male_Announcer、Sincere_Adult。接入代码已写好（src/series.py、src/revoice.py），等开通网络访问和 API Key 后一键替换 30 集。"
  }
 ]
