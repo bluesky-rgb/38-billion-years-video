@@ -5,6 +5,11 @@ from ep1 import W, H, FPS, ss, lerp, text_img, put, fade_win, bg, FB, FM, FL
 
 for m in (ep1, ep2, ep3, ep4, ep5, ep6, ep7, ep8, ep9, ep10, ep11, ep12, ep13, ep14, ep15, ep16, ep17, ep18, ep19, ep20, ep21, ep22, ep23, ep24, ep25, ep26, ep27, ep28, ep29, ep30): m.CLEAN = True
 R = 7.0          # recap / prologue length
+UP = int(os.environ.get('PLATFORM_UP', '0'))   # 平台版：字幕整体上移的像素
+CAP_MAXW = 860 if UP else 10000
+def capfit(im):
+    if im.width <= CAP_MAXW: return im
+    k = CAP_MAXW / im.width; return im.resize((CAP_MAXW, int(im.height * k)), Image.LANCZOS)
 XF = 0.8         # crossfade
 SR = 44100
 NODESETS = {0: ['岩浆球', '第一场雨', '原料', '复制', '细胞', '氧气'], 1: ['发电厂', '雪球地球', '分工', '头和尾', '脊梁', '下巴'], 2: ['爬上岸', '羊膜卵', '大灭绝', '哺乳动物', '小行星', '爬上树'], 3: ['尾巴', '站起来', '石器', '火', '走出非洲', '讲故事'], 4: ['第一块田', '粮仓', '文字', '货币', '国家', '连成网']}
@@ -592,10 +597,10 @@ class Ep:
         s.D = R + s.M + 8.5
         s.prev = EPS.get(n - 1)
         s.season = c.get('season', 0); s.idx = c.get('idx', n)
-        s.caps = [(a + R, b + R, text_img(x, FM, 54)) for a, b, x in c['caps']]
-        s.rcaps = [(a, b, text_img(x, FM, 54)) for a, b, x in c['recap_caps']]
+        s.caps = [(a + R, b + R, capfit(text_img(x, FM, 54))) for a, b, x in c['caps']]
+        s.rcaps = [(a, b, capfit(text_img(x, FM, 54))) for a, b, x in c['recap_caps']]
         s.eras = [(a + R, min(b, s.M) + R, text_img(x, FL, 38, (230, 200, 160), 3)) for a, b, x in c['eras']]
-        s.theme = text_img(c['theme'][0], FM, 54)
+        s.theme = capfit(text_img(c['theme'][0], FM, 54))
         s.cards = [(a + R, b + R, make_card(x, y)) for a, b, x, y in c.get('cards', [])]
         s.scales = [(a + R, min(b, s.M) + R, scale_pill(x)) for a, b, x in c.get('scale', [])]
         s.T_SERIES = text_img('38 亿年家谱', FB, 110, (255, 220, 170), 6)
@@ -632,35 +637,36 @@ class Ep:
         # recap
         if t < R:
             tag = P_PRO if s.prev is None else P_RECAP
-            put(img, tag, W / 2, 1572, fade_win(t, 0.3, R - 0.2, 0.4))
+            put(img, tag, W / 2, 1572 - UP, fade_win(t, 0.3, R - 0.2, 0.4))
             for a, b, im in s.rcaps:
-                if a <= t <= b: put(img, im, W / 2, 1660, fade_win(t, a, b, 0.3))
+                if a <= t <= b: put(img, im, W / 2, 1660 - UP, fade_win(t, a, b, 0.3))
         put(img, s.T_SERIES, W / 2, 760, ta); put(img, s.T_EP, W / 2, 880, ta)
         put(img, s.T_NAME, W / 2, 1010, fade_win(tm, 2.2, 6.0, 0.7) if 0 <= tm < 6.5 else 0)
         for a, b, im in s.caps:
-            if a <= t <= b: put(img, im, W / 2, 1660, fade_win(t, a, b, 0.35))
+            if a <= t <= b: put(img, im, W / 2, 1660 - UP, fade_win(t, a, b, 0.35))
         th = fade_win(tm, s.M + 0.2, s.M + 4.3, 0.4)
-        put(img, P_THEME, W / 2, 1572, th); put(img, s.theme, W / 2, 1660, th)
+        put(img, P_THEME, W / 2, 1572 - UP, th); put(img, s.theme, W / 2, 1660 - UP, th)
         na = fade_win(tm, s.M + 4.6, s.M + 8.6, 0.5) * (1 - ss(s.D - 0.6, s.D, t))
-        put(img, s.T_N1, W / 2, 1500, na); put(img, s.T_N2, W / 2, 1610, na)
+        put(img, s.T_N1, W / 2, 1500 - UP, na); put(img, s.T_N2, W / 2, 1610 - UP, na)
         return img
 
-    def audio(s, path):
+    def audio(s, path, drop_intro=False, quiet=False):
         n = int(s.D * SR); t = np.arange(n) / SR
         cur = np.load(f'bed{s.n}.npy')
+        if quiet: cur = _soften(cur)
         bed = np.zeros(n, np.float32)
         main = cur[:int((s.M + 8.5) * SR)]; st = int(R * SR)
         bed[st:st + main.size] += main[:n - st]
         if s.prev is None: rec = cur[:st] * 0.7
         else:
-            pb = np.load(f'bed{s.n - 1}.npy'); p0 = int((s.prev['M'] + 4.5) * SR); rec = pb[p0:p0 + st]
+            pb = np.load(f'bed{s.n - 1}.npy'); pb = _soften(pb) if quiet else pb; p0 = int((s.prev['M'] + 4.5) * SR); rec = pb[p0:p0 + st]
         xf = int(XF * SR)
         w = np.ones(st); w[st - xf:] = np.linspace(1, 0, xf)
         bed[:st] += rec * w
         bed[st - xf:st] += cur[:xf] * np.linspace(0, 1, xf) if s.prev is not None else 0
         vo = np.zeros(n, np.float32)
         intro = f'三十八亿年家谱，第二部，人类社会，第{NUM[s.idx]}集，{s.c["title"]}。' if s.season >= 4 else f'三十八亿年家谱，第{SNUM[s.season]}季，{SNAME[s.season][1]}第{NUM[s.idx]}集，{s.c["title"]}。'
-        lines = list(s.c['recap_vo']) + [(R + 1.3, intro)]
+        lines = [] if drop_intro else list(s.c['recap_vo']) + [(R + 1.3, intro)]
         lines += [(a + R, x) for a, x in s.c['vo']]
         lines += [(R + s.M + 0.3, s.c['theme'][1]), (R + s.M + 4.8, s.c.get('next_vo', f'下一集，{s.c["next"]}。'))]
         lines.sort(key=lambda z: z[0])
@@ -668,7 +674,7 @@ class Ep:
             nx = lines[k + 1][0] if k + 1 < len(lines) else s.D
             a = fit(tts(x), nx - t0 - 0.15); i0 = int(t0 * SR); i1 = min(i0 + a.size, n); vo[i0:i1] += a[:i1 - i0]
         venv = np.convolve(np.abs(vo), np.ones(int(0.25 * SR)) / int(0.25 * SR), 'same')
-        duck = 1 - 0.5 * np.clip(venv / 0.05, 0, 1)
+        duck = 1 - (0.75 if quiet else 0.5) * np.clip(venv / 0.05, 0, 1)
         mix = bed * duck + vo
         mix *= np.clip(t / 0.6, 0, 1) * np.clip((s.D - t) / 1.2, 0, 1)
         mix = np.tanh(mix * 1.1) / np.tanh(1.1); mix = mix / np.abs(mix).max() * 0.95
@@ -720,6 +726,11 @@ def tts(text):
                    env=dict(os.environ, LD_LIBRARY_PATH=TLIB), check=True, capture_output=True)
     subprocess.run(['ffmpeg', '-y', '-v', 'error', '-i', p, '-ar', str(SR), '-ac', '1', q], check=True)
     a = _load_wav(q); np.save(npy, a); return a
+def _soften(b):
+    """安静版背景：去掉 150Hz 以下的低频轰鸣和 2.5kHz 以上的沙沙声，整体降到四成。"""
+    F = np.fft.rfft(b); f = np.fft.rfftfreq(b.size, 1 / SR)
+    g = np.clip((f - 90) / 60, 0, 1) * np.clip((3500 - f) / 1000, 0, 1)
+    return (np.fft.irfft(F * g, b.size) * 0.4).astype(np.float32)
 def fit(a, slot):
     """Speed a line up (max 1.3x) if it runs past its slot, so lines never overlap."""
     d = a.size / SR
