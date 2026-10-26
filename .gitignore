@@ -7,3 +7,5 @@ vo_cache/
 dl/
 __pycache__/
 !site/videos/*.mp4
+!douyin/videos/*.mp4
+!douyin/*.png
